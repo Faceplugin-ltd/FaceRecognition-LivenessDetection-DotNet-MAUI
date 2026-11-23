@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:FaceRecognition.Net.Maui"
+       x:Class="FaceRecognition.Net.Maui.AppShell"
+       Shell.FlyoutBehavior="Disabled"
+       Shell.BackgroundColor="#1C1B1F"
+       Shell.ForegroundColor="#E6E1E5"
+       Shell.TitleColor="#E6E1E5"
+       Shell.TabBarBackgroundColor="#1C1B1F"
+       Shell.TabBarForegroundColor="#D0BCFF"
+       Shell.TabBarUnselectedColor="#938F99"
+       Shell.TabBarTitleColor="#E6E1E5"
+       Shell.NavBarIsVisible="False"
+       Title="Face Recognition">
+    <!-- The five tabs the Android app has, in the same order: bottom_nav.xml. -->
+    <TabBar>
+        <ShellContent Title="Identity"
+                      Icon="tab_identity.png"
+                      Route="IdentityTab"
+                      ContentTemplate="{DataTemplate local:IdentityTabPage}" />
+        <ShellContent Title="People"
+                      Icon="tab_people.png"
+                      Route="PeoplePage"
+                      ContentTemplate="{DataTemplate local:PeoplePage}" />
+        <ShellContent Title="Attribute"
+                      Icon="tab_attribute.png"
+                      Route="AttributeTab"
+                      ContentTemplate="{DataTemplate local:AttributeTabPage}" />
+        <ShellContent Title="Liveness"
+                      Icon="tab_liveness.png"
+                      Route="LivenessPage"
+                      ContentTemplate="{DataTemplate local:LivenessPage}" />
+        <ShellContent Title="Settings"
+                      Icon="tab_settings.png"
+                      Route="SettingsPage"
+                      ContentTemplate="{DataTemplate local:SettingsPage}" />
+    </TabBar>
+</Shell>

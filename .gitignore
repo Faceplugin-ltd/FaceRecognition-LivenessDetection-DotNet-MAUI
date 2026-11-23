@@ -1,0 +1,17 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+.DS_Store
+
+# Native runtimes are downloaded, not committed.
+src/FaceRecognition.Net.Maui/Platforms/Android/libs/*.aar
+src/FaceRecognition.Net.Maui/Platforms/iOS/Frameworks/**
+!src/FaceRecognition.Net.Maui/Platforms/iOS/Frameworks/README.md
+!src/FaceRecognition.Net.Maui/Platforms/Android/libs/README.md
+
+# Python caches from run_android / run_ios
+__pycache__/
+*.pyc
+*.pyo

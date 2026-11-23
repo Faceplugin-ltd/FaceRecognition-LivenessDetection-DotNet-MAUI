@@ -1,0 +1,101 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>FaceRecognition.Net.Maui</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<ApplicationTitle>Face Recognition</ApplicationTitle>
+		<ApplicationId>com.faceplugin.facerecognitionsdk</ApplicationId>
+		<ApplicationId Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">com.faceplugin.facerecognition.app</ApplicationId>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+		<!-- Folder picker uses UTTypeFolder. Link the system framework into the iOS app. -->
+		<MtouchExtraArgs Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">$(MtouchExtraArgs) -gcc_flags "-framework UniformTypeIdentifiers"</MtouchExtraArgs>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+
+		<!-- Device iOS: LX engines are arm64 device-only (not simulator). -->
+		<CodesignKey Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">Apple Development</CodesignKey>
+		<DevelopmentTeam Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">F5UMQMPPB8</DevelopmentTeam>
+		<CodesignProvision Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">Automatic</CodesignProvision>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- One FP master. Resizetizer uses it as the adaptive foreground and Color as the background.
+		     A second ForegroundFile, or a cached background PNG of the same logo, paints the mark twice.
+		     Android only: scale the foreground to 0.57 so the mark sits at ~50% of the 108dp layer. -->
+		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#000000" />
+		<MauiIcon Update="Resources\AppIcon\appicon.png" ForegroundScale="0.57" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#1C1B1F" BaseSize="128,128" />
+		<MauiImage Include="Resources\Images\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Camera.MAUI" Version="1.5.1" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android' and Exists('Platforms\Android\libs\facerecognitionsdk.aar')">
+		<!-- Bind="false": the C# side talks to FaceBridge.java over JNI, so no C# bindings are
+		     needed, and generating them fails on a class in the engine whose generated binding
+		     overrides object.Finalize. -->
+		<AndroidLibrary Include="Platforms\Android\libs\facerecognitionsdk.aar" Bind="false" />
+		<AndroidJavaSource Include="Platforms\Android\java\**\*.java" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('Platforms\iOS\Frameworks\facerecognitionsdk.framework')">
+		<NativeReference Include="Platforms\iOS\Frameworks\facerecognitionsdk.framework">
+			<Kind>Framework</Kind>
+			<SmartLink>False</SmartLink>
+			<ForceLoad>True</ForceLoad>
+		</NativeReference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('Platforms\iOS\Frameworks\FacePluginSDK.framework')">
+		<NativeReference Include="Platforms\iOS\Frameworks\FacePluginSDK.framework">
+			<Kind>Framework</Kind>
+			<SmartLink>False</SmartLink>
+			<ForceLoad>True</ForceLoad>
+		</NativeReference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('Platforms\iOS\Frameworks\FacePPlugin.framework')">
+		<NativeReference Include="Platforms\iOS\Frameworks\FacePPlugin.framework">
+			<Kind>Framework</Kind>
+			<SmartLink>False</SmartLink>
+			<ForceLoad>True</ForceLoad>
+		</NativeReference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('Platforms\iOS\Frameworks\FaceDetect.framework')">
+		<NativeReference Include="Platforms\iOS\Frameworks\FaceDetect.framework">
+			<Kind>Framework</Kind>
+			<SmartLink>False</SmartLink>
+			<ForceLoad>True</ForceLoad>
+		</NativeReference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+		<NativeReference Include="Platforms/iOS/Native/libFaceWorkerBridge.a">
+			<Kind>Static</Kind>
+			<ForceLoad>True</ForceLoad>
+			<SmartLink>False</SmartLink>
+		</NativeReference>
+	</ItemGroup>
+
+	<!-- Real ObjC VideoWorker event handler (Flutter/RN style). Hand-rolled C# blocks crash (SIGSEGV). -->
+	<Target Name="BuildFaceWorkerBridge"
+			BeforeTargets="CoreCompile"
+			Condition="'$(TargetFramework)' == 'net8.0-ios'">
+		<Exec Command="bash &quot;$(MSBuildProjectDirectory)/Platforms/iOS/scripts/build_face_worker_bridge.sh&quot; &quot;$(MSBuildProjectDirectory)/Platforms/iOS/Native&quot;" />
+	</Target>
+
+	<!-- Nested LX frameworks must be sealed with the app identity or device launch fails. -->
+	<Target Name="SignNestedFaceRecognitionSdk" BeforeTargets="BeforeCodeSign" Condition="'$(TargetFramework)' == 'net8.0-ios' And Exists('$(AppBundleDir)\Frameworks')">
+		<Exec Command="bash &quot;$(MSBuildProjectDirectory)/Platforms/iOS/scripts/sign_nested_facerecognitionsdk.sh&quot; &quot;$(AppBundleDir)&quot; &quot;$(_CodeSigningKey)&quot;" />
+	</Target>
+
+</Project>
