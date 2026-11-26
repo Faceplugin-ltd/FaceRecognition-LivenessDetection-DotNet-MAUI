@@ -68,11 +68,11 @@ public class SettingsPage : ContentPage
             DemoSettings.MaxThreshold,
             v => SettingsStore.Save(SettingsStore.Current with { IdentifyThreshold = v })));
         _matching.Children.Add(Help(
-            "Luxand FaceSDK standard identity verification is 0.80. A gallery face matches at " +
+            "The standard threshold for identity verification is 0.80. A gallery face matches at " +
             "or above this value. 0.70 is convenience, 0.90 is high security."));
         _matching.Children.Add(SwitchRow(
             "Liveness check",
-            "Reject photos of photos and screens before identifying. Luxand counts a face as " +
+            "Reject photos of photos and screens before identifying. A face counts as " +
             "live when its score is above 0.5.",
             s.CheckLiveness,
             v => SettingsStore.Save(SettingsStore.Current with { CheckLiveness = v })));

@@ -20,7 +20,7 @@
 		<MtouchExtraArgs Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">$(MtouchExtraArgs) -gcc_flags "-framework UniformTypeIdentifiers"</MtouchExtraArgs>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
 
-		<!-- Device iOS: LX engines are arm64 device-only (not simulator). -->
+		<!-- Device iOS: engines are arm64 device-only (not simulator). -->
 		<CodesignKey Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">Apple Development</CodesignKey>
 		<DevelopmentTeam Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">F5UMQMPPB8</DevelopmentTeam>
 		<CodesignProvision Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">Automatic</CodesignProvision>
@@ -93,7 +93,7 @@
 		<Exec Command="bash &quot;$(MSBuildProjectDirectory)/Platforms/iOS/scripts/build_face_worker_bridge.sh&quot; &quot;$(MSBuildProjectDirectory)/Platforms/iOS/Native&quot;" />
 	</Target>
 
-	<!-- Nested LX frameworks must be sealed with the app identity or device launch fails. -->
+	<!-- Nested frameworks must be sealed with the app identity or device launch fails. -->
 	<Target Name="SignNestedFaceRecognitionSdk" BeforeTargets="BeforeCodeSign" Condition="'$(TargetFramework)' == 'net8.0-ios' And Exists('$(AppBundleDir)\Frameworks')">
 		<Exec Command="bash &quot;$(MSBuildProjectDirectory)/Platforms/iOS/scripts/sign_nested_facerecognitionsdk.sh&quot; &quot;$(AppBundleDir)&quot; &quot;$(_CodeSigningKey)&quot;" />
 	</Target>

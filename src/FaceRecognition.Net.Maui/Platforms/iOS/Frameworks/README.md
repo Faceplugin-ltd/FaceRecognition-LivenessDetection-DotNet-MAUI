@@ -1,4 +1,4 @@
-Unzip / copy the LX iOS runtime from Face-Recognition-LivenessDetection-iOS before the iOS build:
+Unzip / copy the iOS runtime from Face-Recognition-LivenessDetection-iOS before the iOS build:
 
 ```text
 facerecognitionsdk.framework

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Re-sign the LX Face Recognition frameworks with the app identity.
+# Re-sign the Face Recognition frameworks with the app identity.
 set -euo pipefail
 
 APP_BUNDLE="${1:?app bundle path required}"
