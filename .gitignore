@@ -11,7 +11,7 @@ src/FaceRecognition.Net.Maui/Platforms/iOS/Frameworks/**
 !src/FaceRecognition.Net.Maui/Platforms/iOS/Frameworks/README.md
 !src/FaceRecognition.Net.Maui/Platforms/Android/libs/README.md
 
-# Python caches from run_android / run_ios
+# Python caches from run_android.py / run_ios.py
 __pycache__/
 *.pyc
 *.pyo
