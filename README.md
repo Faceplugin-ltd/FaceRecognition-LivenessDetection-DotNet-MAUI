@@ -122,8 +122,10 @@ build on .NET 8 when a newer SDK is the default. By hand:
 # Android — phone connected, USB debugging on
 dotnet build src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj -f net8.0-android -t:Run
 
-# iOS — macOS + Xcode 15+, iPhone connected
-dotnet build src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj -f net8.0-ios -r ios-arm64 -t:Run
+# iOS — prefer the runner (mlaunch -t:Run often fails with MT1044 / --devname on CoreDevice phones)
+python3 run_ios.py
+# Or build only, then install with Xcode / devicectl:
+# dotnet build src/FaceRecognition.Net.Maui/FaceRecognition.Net.Maui.csproj -f net8.0-ios -r ios-arm64
 ```
 
 Keep the demo ids so the included license activates:
