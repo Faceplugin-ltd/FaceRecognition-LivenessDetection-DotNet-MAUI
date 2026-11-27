@@ -1,17 +1,50 @@
+# Build / IDE
 bin/
 obj/
 .vs/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.log
 .DS_Store
 
-# Native runtimes are downloaded, not committed.
+# NuGet / packages (restored on build)
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nupkg
+**/project.lock.json
+**/project.fragment.lock.json
+artifacts/
+
+# Native runtimes (downloaded from GitHub Releases)
 src/FaceRecognition.Net.Maui/Platforms/Android/libs/*.aar
 src/FaceRecognition.Net.Maui/Platforms/iOS/Frameworks/**
 !src/FaceRecognition.Net.Maui/Platforms/iOS/Frameworks/README.md
 !src/FaceRecognition.Net.Maui/Platforms/Android/libs/README.md
 
-# Python caches from run_android.py / run_ios.py
+# Android / iOS incidental
+.gradle/
+**/build/
+.cxx/
+*.apk
+*.aab
+*.ipa
+**/Pods/
+DerivedData/
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+.venv/
+venv/
+
+# Env / secrets
+.env
+.env.*
+*.jks
+*.keystore
+*.pfx
+*.snk
